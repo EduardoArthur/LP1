@@ -1,25 +1,22 @@
 #include <stdio.h>
 
 int eh_primo (int x){
-  int d=0;
   int i;
-  for (i=1;i<=x;i++){
-    if (x%i==0){
-      d=d+1;
-    }
-  }
-  if (d>2){
+  if (x<=1){
     return 0;
-  }
+    }
   else{
-    return 1;
+    for (i=2;i<=x/2;i++){
+      if (x%i==0){
+        return 0;
+        }
+      }
     }
   }
 int todos_os_primos (int x){
   int i;
   for(i=1;i<=x;i++){
-    int X=eh_primo(i);
-    if (X==1){
+    if (eh_primo(i)!=0){
       printf("%d\n", i);
       }
     }
