@@ -2,12 +2,17 @@
 
 int eh_primo (int x){
   int i;
-  for (i=2;i<x;i++){
-    if (x%i==0){
-      return 0;
+  if (x<=1){
+    return 0;
+    }
+  else{
+    for (i=2;i<=x/2;i++){
+      if (x%i==0){
+        return 0;
+        }
+      }
     }
   }
-}
 
 int main(void){
   int y;
@@ -22,6 +27,3 @@ int main(void){
     }
     return 0;
   }
-
-
-
