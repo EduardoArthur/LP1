@@ -1,20 +1,13 @@
 #include <stdio.h>
 
 int eh_primo (int x){
-  int d=0;
   int i;
-  for (i=1;i<=x;i++){
+  for (i=2;i<x;i++){
     if (x%i==0){
-      d=d+1;
+      return 0;
     }
   }
-  if (d>2){
-    return 0;
-  }
-  else{
-    return 1;
-    }
-  }
+}
 
 int main(void){
   int y;
@@ -29,5 +22,6 @@ int main(void){
     }
     return 0;
   }
+
 
 
