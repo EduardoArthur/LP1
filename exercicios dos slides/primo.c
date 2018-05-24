@@ -9,10 +9,11 @@ int eh_primo (int x){
     for (i=2;i<=x/2;i++){
       if (x%i==0){
         return 0;
-        }
       }
     }
   }
+	return 1;
+}
 
 int main(void){
   int y;
