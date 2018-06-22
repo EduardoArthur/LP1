@@ -2,13 +2,12 @@
 #define L 4
 #define C 4
 void preenche(int v[L][C]){
-    int x;
     int i;
     int j;
     for(i=0;i<L;i++){
         for(j=0;j<C;j++){
-            scanf("elementos da matriz:%d\n",&x);
-                    v[i][j]=x;
+	    printf("digite v %d %d\n", i, j);
+	    scanf("%d", &v[i][j]);
         }
     }
 }
