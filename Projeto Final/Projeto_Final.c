@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
+#define L 11
+#define C 11
 struct experimento{
 	float v;
 	float vi;
@@ -9,17 +12,57 @@ struct experimento{
 };
 
 
+void torriceli(struct experimento *e1){
+	//v²=vi²+2*a*s
+	if (e1->v  == -1000){
+		e1->v=sqrt(pow(e1->vi,2)+(2*(e1->a)*(e1->s)));
+	}
+	if (e1->vi == -1000){
+		e1->vi=sqrt(pow(e1->v,2)-(2*(e1->a)*(e1->s)));
+	}
+	if (e1->a  == -1000){
+		e1->a=(pow(e1->v,2)-pow(e1->vi,2))/(2*e1->s);
+	}
+	if (e1->s  == -1000){
+		e1->s=(pow(e1->v,2)-pow(e1->vi,2))/(2*e1->a);
+	}
+}
+void muv1(struct experimento *e1){
+	//v=vi+a*t
+	if(e1->v  == -1000){
+		e1->v=(e1->vi)+(e1->a)*(e1->t);
+	}
+	if(e1->vi == -1000){
+		e1->vi=(e1->v)-(e1->a)*(e1->t);
+	}
+	if(e1->a  == -1000){
+		e1->a=((e1->v)-(e1->vi))/(e1->t);
+	}
+	if(e1->t  == -1000){
+		e1->t=((e1->v)-(e1->vi))/(e1->a);
+	}
+}
+void muv2(struct experimento *e1){
+	//s=vi*t+(a*t²)/2
+	if (e1->s  == -1000){
+		e1->s=e1->vi*e1->t+(((e1->a)*pow(e1->t,2))/2);
+	}
+	if (e1->vi == -1000){
+		e1->vi=(e1->s/e1->t)-(((e1->a)*pow(e1->t,2))/2);
+	}
+	if (e1->a  == -1000){
+		e1->a=((2*e1->s)/pow(e1->t,2))-((2*e1->vi)/(e1->t));
+	}
+	if (e1->t  == -1000){
+		//devido a dificuldade em isolar o t o programa realiza torriceli(v²=vi²+2*a*s)
+		// para encontrar o v e depois, com o v obtido
+		// ele usa muv1(t=v-vi/a) para achar o tempo.
+		e1->v=sqrt(pow(e1->vi,2)+(2*(e1->a)*(e1->s)));
+		e1->t=((e1->v)-(e1->vi))/(e1->a);
+	}
+}
+
 /*
-adaptar as funçoes para todos os possiveis casos
-void torriceli(struct experimento e1){
-	v*v=vi*vi+2*a*s
-}
-void muv2(struct experimento e1){
-	s=vi*t+(a*t*t)/2(float)
-}
-void muv1(struct experimento e1){
-	v=vi+a*t
-}
 void desviopadrão(){}
 */
 void tempomedio(struct experimento *e1){
@@ -37,6 +80,7 @@ void tempomedio(struct experimento *e1){
 	}
 	(*e1).t=somatemp/n;	
 }
+
 void valoresF(struct experimento *e1){
 	int x;
 	printf("informações fornecidas\n");
@@ -72,16 +116,73 @@ void valoresF(struct experimento *e1){
 		scanf("%f",&(*e1).t);
 	}
 }
+
+void gera_grafico(struct experimento *e1){	
+	int mat[L][C]={{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0}};
+	int i,j;
+	int grafico;
+	printf("selecione o tipo de grafico:\n");
+	printf("1 - movimento uniforme ∆S X ∆T\n");	
+	printf("2 - movimento uniformemente variado ∆V X ∆T\n");
+	printf("3 - movimento uniformemente variado ∆S X ∆T\n");	
+	scanf("%d",&grafico);
+	printf("\n");
+	switch(grafico){
+		case 1:
+			if(e1->a==0){
+				for(i=0;i<L;i++){
+					j=i*e1->v;
+					if(j<L){
+						mat[i][j]=1;
+					}
+				}
+			}
+			
+	}
+
+	//imprime o grafico
+	printf("∆S");
+	printf("\n");
+	for (i=L-1; i>0; i--){
+		printf("%d ",i);
+		for (j=1;j<C;j++){
+			int v=mat[j][i];
+			if (v==0){
+				printf(". ");
+			}else{
+				printf("● ");
+			}
+		}
+		printf("\n");
+	}
+	printf("  ");
+	
+	for (j=1; j<C; j++){
+		printf("%d ",j);
+	}
+	printf("∆T");
+	printf("\n");
+	
+}
+
 int main(void){
 	struct experimento e1;
+	e1.v  = -1000;
+	e1.vi = -1000;
+	e1.a  = -1000;
+	e1.s  = -1000;
+	e1.t  = -1000;
 	int menu;
 	printf("selecione o tipo de exercicio\n");
 	printf("1 - Exercicios classicos\n");	
 	printf("2 - Laboratorio\n");	
 	scanf("%d",&menu);
+	printf("\n");
 	switch(menu){
 		case 1:	
 			valoresF(&e1);
+			gera_grafico(&e1);
+			break;
 		case 2:
 			tempomedio(&e1);
 			printf("tempo medio %f\n", e1.t);
