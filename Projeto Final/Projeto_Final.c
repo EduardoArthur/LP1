@@ -81,38 +81,43 @@ void tempomedio(struct experimento *e1){
 	(*e1).t=somatemp/n;	
 }
 
-void valoresF(struct experimento *e1){
+void valoresF(struct experimento *e1, int info[5]){
 	int x;
 	printf("informações fornecidas\n");
 	printf("digite 1 para sim e 0 para não\n");
 	printf("velocidade final\n");
 	scanf("%d", &x);
 	if (x==1){
-		printf("valor\n");
+		info[0]=1;
+		printf("valor da velocidade final:\n");
 		scanf("%f",&(*e1).v);
 	}
 	printf("velocidade inicial\n");
 	scanf("%d", &x);
 	if (x==1){
-		printf("valor\n");
+		info[1]=1;
+		printf("valor da velocidade inicial:\n");
 		scanf("%f",&(*e1).vi);
 	}
 	printf("aceleração\n");
 	scanf("%d", &x);
 	if (x==1){
-		printf("valor\n");
+		info[2]=1;
+		printf("valor da aceleração:\n");
 		scanf("%f",&(*e1).a);
 	}
-	printf("distancia\n");
+	printf("deslocamento\n");
 	scanf("%d", &x);
 	if (x==1){
-		printf("valor\n");
+		info[3]=1;
+		printf("valor do deslocamento:\n");
 		scanf("%f",&(*e1).s);
 	}
 	printf("tempo \n");
 	scanf("%d", &x);
 	if (x==1){
-		printf("valor\n");
+		info[4]=1;
+		printf("valor do tempo:\n");
 		scanf("%f",&(*e1).t);
 	}
 }
@@ -172,6 +177,7 @@ int main(void){
 	e1.a  = -1000;
 	e1.s  = -1000;
 	e1.t  = -1000;
+	int info[5]={0,0,0,0,0};
 	int menu;
 	printf("selecione o tipo de exercicio\n");
 	printf("1 - Exercicios classicos\n");	
@@ -180,7 +186,10 @@ int main(void){
 	printf("\n");
 	switch(menu){
 		case 1:	
-			valoresF(&e1);
+			valoresF(&e1,info[5]);
+			if( info == {1,1,1,0,0} || info == {1,1,0,0,1} || info == {1,0,1,0,1} || info == {0,1,1,0,1} ){
+				muv1(&e1);
+			}
 			gera_grafico(&e1);
 			break;
 		case 2:
