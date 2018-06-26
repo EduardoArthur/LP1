@@ -81,42 +81,37 @@ void tempomedio(struct experimento *e1){
 	(*e1).t=somatemp/n;	
 }
 
-void valoresF(struct experimento *e1, int info[5]){
+void valoresF(struct experimento *e1){
 	int x;
 	printf("informações fornecidas\n");
 	printf("digite 1 para sim e 0 para não\n");
 	printf("velocidade final\n");
 	scanf("%d", &x);
 	if (x==1){
-		info[0]=1;
 		printf("valor da velocidade final:\n");
 		scanf("%f",&(*e1).v);
 	}
 	printf("velocidade inicial\n");
 	scanf("%d", &x);
 	if (x==1){
-		info[1]=1;
 		printf("valor da velocidade inicial:\n");
 		scanf("%f",&(*e1).vi);
 	}
 	printf("aceleração\n");
 	scanf("%d", &x);
 	if (x==1){
-		info[2]=1;
 		printf("valor da aceleração:\n");
 		scanf("%f",&(*e1).a);
 	}
 	printf("deslocamento\n");
 	scanf("%d", &x);
 	if (x==1){
-		info[3]=1;
 		printf("valor do deslocamento:\n");
 		scanf("%f",&(*e1).s);
 	}
 	printf("tempo \n");
 	scanf("%d", &x);
 	if (x==1){
-		info[4]=1;
 		printf("valor do tempo:\n");
 		scanf("%f",&(*e1).t);
 	}
@@ -127,21 +122,51 @@ void gera_grafico(struct experimento *e1){
 	int i,j;
 	int grafico;
 	printf("selecione o tipo de grafico:\n");
-	printf("1 - movimento uniforme ∆S X ∆T\n");	
+	printf("1 - movimento uniforme / variado ∆S X ∆T\n");	
 	printf("2 - movimento uniformemente variado ∆V X ∆T\n");
-	printf("3 - movimento uniformemente variado ∆S X ∆T\n");	
+	printf("3 - ∆V X ∆T\n");
+	//pensar em casos negativos *comum em ∆a X ∆T	
 	scanf("%d",&grafico);
 	printf("\n");
 	switch(grafico){
 		case 1:
 			if(e1->a==0){
-				for(i=0;i<L;i++){
-					j=i*e1->v;
-					if(j<L){
-						mat[i][j]=1;
+				if(e1->t == -1000){
+					for(i=0;i<L;i++){
+						//colocar possibilidade de erro do usuario caso troque v com vi
+						j=i*e1->v;
+						if(j<L){
+							mat[i][j]=1;
+						}
+					}
+					}else{
+						for(i=0;i<L;i++){
+							j=i*e1->v;
+							if(j<=e1->t){
+								if(j<L){
+									mat[i][j]=1;
+								}
+						}
 					}
 				}
-			}
+			}else{
+				if(e1->t == -1000){
+					for(i=0;i<L;i++){
+						j=(i*e1->vi)+(e1->a*pow(i,2))/2;
+						if(j<L){
+							mat[i][j]=1;
+						}
+					}
+					}else{
+						for(i=0;i<L;i++){
+							j=(i*e1->vi)+(e1->a*pow(i,2))/2;
+							if(j<=e1->t){
+								if(j<L){
+									mat[i][j]=1;
+								}
+						}
+					}
+				}
 			
 	}
 
@@ -177,7 +202,6 @@ int main(void){
 	e1.a  = -1000;
 	e1.s  = -1000;
 	e1.t  = -1000;
-	int info[5]={0,0,0,0,0};
 	int menu;
 	printf("selecione o tipo de exercicio\n");
 	printf("1 - Exercicios classicos\n");	
@@ -186,10 +210,19 @@ int main(void){
 	printf("\n");
 	switch(menu){
 		case 1:	
-			valoresF(&e1,info[5]);
-			if( info == {1,1,1,0,0} || info == {1,1,0,0,1} || info == {1,0,1,0,1} || info == {0,1,1,0,1} ){
+		//v²=vi²+2*a*s
+		//s=vi*t+(a*t²)/2
+			valoresF(&e1);
+			if( e1->v != -1000 && e1->vi != -1000 && e1->a != -1000 || e1->v != -1000 && e1->vi != -1000 && e1->t != -1000 || e1->vi != -1000 && e1->a != -1000 && e1->t != -1000 || e1->v != -1000 && e1->a != -1000 && e1->t != -1000 ){
 				muv1(&e1);
 			}
+			if( e1->s != -1000 && e1->vi != -1000 && e1->a != -1000 || e1->s != -1000 && e1->vi != -1000 && e1->t != -1000 || e1->s != -1000 && e1->a != -1000 && e1->t != -1000 || e1->vi != -1000 && e1->a != -1000 && e1->t != -1000 ){
+				muv2(&e1);
+			}
+			if( e1->v != -1000 && e1->vi != -1000 && e1->a != -1000 || e1->v != -1000 && e1->vi != -1000 && e1->s != -1000 || e1->vi != -1000 && e1->a != -1000 && e1->s != -1000 || e1->v != -1000 && e1->a != -1000 && e1->s != -1000 ){
+				torriceli(&e1);
+			}
+			
 			gera_grafico(&e1);
 			break;
 		case 2:
