@@ -63,7 +63,15 @@ void muv2(struct experimento *e1){
 }
 
 /*
-void desviopadrão(){}
+float desviopadrão(int x[],int n,float m ){ /*vetor com todas as medidas, tamanho do vetor e media dos valores * /
+int i;
+float s=0;
+for(i=0;i<=n;i++){
+	s=pow((x[i]-m),2)+s;
+}
+dp=sqrt(s/n)
+return dp;
+}
 */
 void tempomedio(struct experimento *e1){
 	int n;
@@ -74,7 +82,7 @@ void tempomedio(struct experimento *e1){
 	printf("quantidade de medidas recolhidas\n");
 	scanf("%d", &n);
 	for (i=1; i<=n; i++){
-		printf("tempo%d \n", i);
+		printf("tempo: %d \n", i);
 		scanf("%f", &t);
 		somatemp=somatemp+t;
 	}
@@ -142,7 +150,7 @@ void gera_grafico(struct experimento *e1){
 					}else{
 						for(i=0;i<L;i++){
 							j=i*e1->v;
-							if(j<=e1->t){
+							if(j<=e1->s){
 								if(j<L){
 									mat[i][j]=1;
 								}
@@ -160,10 +168,11 @@ void gera_grafico(struct experimento *e1){
 					}else{
 						for(i=0;i<L;i++){
 							j=(i*e1->vi)+(e1->a*pow(i,2))/2;
-							if(j<=e1->t){
+							if(j<=e1->s){
 								if(j<L){
 									mat[i][j]=1;
 								}
+							}
 						}
 					}
 				}
@@ -174,7 +183,11 @@ void gera_grafico(struct experimento *e1){
 	printf("∆S");
 	printf("\n");
 	for (i=L-1; i>0; i--){
-		printf("%d ",i);
+		if(i>9){
+			printf("%d ",i);
+		}else{
+			printf(" %d ",i);
+		}
 		for (j=1;j<C;j++){
 			int v=mat[j][i];
 			if (v==0){
@@ -185,7 +198,7 @@ void gera_grafico(struct experimento *e1){
 		}
 		printf("\n");
 	}
-	printf("  ");
+	printf("   ");
 	
 	for (j=1; j<C; j++){
 		printf("%d ",j);
@@ -210,19 +223,21 @@ int main(void){
 	printf("\n");
 	switch(menu){
 		case 1:	
-		//v²=vi²+2*a*s
-		//s=vi*t+(a*t²)/2
 			valoresF(&e1);
-			if( e1->v != -1000 && e1->vi != -1000 && e1->a != -1000 || e1->v != -1000 && e1->vi != -1000 && e1->t != -1000 || e1->vi != -1000 && e1->a != -1000 && e1->t != -1000 || e1->v != -1000 && e1->a != -1000 && e1->t != -1000 ){
+			if( e1.v != -1000 && e1.vi != -1000 && e1.a != -1000 || e1.v != -1000 && e1.vi != -1000 && e1.t != -1000 || e1.vi != -1000 && e1.a != -1000 && e1.t != -1000 || e1.v != -1000 && e1.a != -1000 && e1.t != -1000 ){
 				muv1(&e1);
 			}
-			if( e1->s != -1000 && e1->vi != -1000 && e1->a != -1000 || e1->s != -1000 && e1->vi != -1000 && e1->t != -1000 || e1->s != -1000 && e1->a != -1000 && e1->t != -1000 || e1->vi != -1000 && e1->a != -1000 && e1->t != -1000 ){
+			if( e1.s != -1000 && e1.vi != -1000 && e1.a != -1000 || e1.s != -1000 && e1.vi != -1000 && e1.t != -1000 || e1.s != -1000 && e1.a != -1000 && e1.t != -1000 || e1.vi != -1000 && e1.a != -1000 && e1.t != -1000 ){
 				muv2(&e1);
 			}
-			if( e1->v != -1000 && e1->vi != -1000 && e1->a != -1000 || e1->v != -1000 && e1->vi != -1000 && e1->s != -1000 || e1->vi != -1000 && e1->a != -1000 && e1->s != -1000 || e1->v != -1000 && e1->a != -1000 && e1->s != -1000 ){
+			if( e1.v != -1000 && e1.vi != -1000 && e1.a != -1000 || e1.v != -1000 && e1.vi != -1000 && e1.s != -1000 || e1.vi != -1000 && e1.a != -1000 && e1.s != -1000 || e1.v != -1000 && e1.a != -1000 && e1.s != -1000 ){
 				torriceli(&e1);
 			}
-			
+			printf("velocidade final: %f\n", e1.v);
+			printf("velocidade inicial: %f\n", e1.vi);
+			printf("aceleração: %f\n", e1.a);
+			printf("deslocamento: %f\n", e1.s);
+			printf("tempo: %f\n", e1.t);
 			gera_grafico(&e1);
 			break;
 		case 2:
