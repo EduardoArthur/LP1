@@ -21,12 +21,12 @@ int media(int v[L][C]){
         }
     }
     x=x/(L*C);
-    return printf("Media:%f\n", x);      
+    return x;      
 }
 int main(void){
     int v[L][C];
     preenche(v);
     media(v);
-
+    	
     return 0;
 }
