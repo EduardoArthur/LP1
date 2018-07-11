@@ -3,63 +3,91 @@
 #include <math.h>
 #define L 11
 #define C 11
+
+struct deslocamento{
+	float si;
+	float sf;
+};
+
 struct experimento{
+	unsigned char flags[5];
 	float v;
 	float vi;
 	float a;
 	float s;
 	float t;
+	struct deslocamento d1;
 };
 
 
 void torriceli(struct experimento *e1){
 	//v²=vi²+2*a*s
-	if (e1->v  == -1000){
+	if (e1->flags[0]  == 0){
 		e1->v=sqrt(pow(e1->vi,2)+(2*(e1->a)*(e1->s)));
+		e1->flags[0]  = 1;
 	}
-	if (e1->vi == -1000){
+	if (e1->flags[1]  == 0){
 		e1->vi=sqrt(pow(e1->v,2)-(2*(e1->a)*(e1->s)));
+		e1->flags[1]  = 1;
 	}
-	if (e1->a  == -1000){
+	if (e1->flags[2]  == 0){
 		e1->a=(pow(e1->v,2)-pow(e1->vi,2))/(2*e1->s);
+		e1->flags[2]  = 1;
 	}
-	if (e1->s  == -1000){
+	if (e1->flags[3]  == 0){
 		e1->s=(pow(e1->v,2)-pow(e1->vi,2))/(2*e1->a);
+		e1->flags[3]  = 1;
 	}
 }
 void muv1(struct experimento *e1){
 	//v=vi+a*t
-	if(e1->v  == -1000){
+	if(e1->flags[0]  == 0){
 		e1->v=(e1->vi)+(e1->a)*(e1->t);
+		e1->flags[0]  = 1;
 	}
-	if(e1->vi == -1000){
+	if(e1->flags[1]  == 0){
 		e1->vi=(e1->v)-(e1->a)*(e1->t);
+		e1->flags[1]  = 1;
 	}
-	if(e1->a  == -1000){
+	if(e1->flags[2]  == 0){
 		e1->a=((e1->v)-(e1->vi))/(e1->t);
+		e1->flags[2]  = 1;
 	}
-	if(e1->t  == -1000){
-		e1->t=((e1->v)-(e1->vi))/(e1->a);
+	if(e1->flags[4]  == 0 ){
+		if(e1->a != 0){
+			e1->t=((e1->v)-(e1->vi))/(e1->a);
+			e1->flags[4]  = 1;
+		}
 	}
 }
 void muv2(struct experimento *e1){
 	//s=vi*t+(a*t²)/2
-	if (e1->s  == -1000){
+	if (e1->flags[3]  == 0){
 		e1->s=e1->vi*e1->t+(((e1->a)*pow(e1->t,2))/2);
+		e1->flags[3]  = 1;
 	}
-	if (e1->vi == -1000){
+	if (e1->flags[1]  == 0){
 		e1->vi=(e1->s/e1->t)-(((e1->a)*pow(e1->t,2))/2);
+		e1->flags[1]  = 1;
 	}
-	if (e1->a  == -1000){
+	if (e1->flags[2]  == 0){
 		e1->a=((2*e1->s)/pow(e1->t,2))-((2*e1->vi)/(e1->t));
+		e1->flags[2]  = 1;
 	}
-	if (e1->t  == -1000){
-		//devido a dificuldade em isolar o t o programa realiza torriceli(v²=vi²+2*a*s)
-		// para encontrar o v e depois, com o v obtido
-		// ele usa muv1(t=v-vi/a) para achar o tempo.
-		e1->v=sqrt(pow(e1->vi,2)+(2*(e1->a)*(e1->s)));
-		e1->t=((e1->v)-(e1->vi))/(e1->a);
+	if (e1->flags[4]  == 0){
+		if(e1->a == 0){
+			e1->t =(e1->s)/(e1->v);
+			e1->flags[4]  = 1;
+		}else{
+			//devido a dificuldade em isolar o t o programa realiza torriceli(v²=vi²+2*a*s)
+			// para encontrar o v e depois, com o v obtido
+			// ele usa muv1(t=v-vi/a) para achar o tempo.
+			e1->v=sqrt(pow(e1->vi,2)+(2*(e1->a)*(e1->s)));
+			e1->t=((e1->v)-(e1->vi))/(e1->a);
+			e1->flags[4]  = 1;
+		}
 	}
+
 }
 
 /*
@@ -89,44 +117,60 @@ void tempomedio(struct experimento *e1){
 	(*e1).t=somatemp/n;	
 }
 
-void valoresF(struct experimento *e1){
+void valoresF(struct experimento *e1 , struct deslocamento *d1){
 	int x;
 	printf("informações fornecidas\n");
 	printf("digite 1 para sim e 0 para não\n");
 	printf("velocidade final\n");
 	scanf("%d", &x);
 	if (x==1){
+		e1->flags[0] = 1;
 		printf("valor da velocidade final:\n");
 		scanf("%f",&(*e1).v);
 	}
 	printf("velocidade inicial\n");
 	scanf("%d", &x);
 	if (x==1){
+		e1->flags[1] = 1;
 		printf("valor da velocidade inicial:\n");
 		scanf("%f",&(*e1).vi);
 	}
 	printf("aceleração\n");
 	scanf("%d", &x);
 	if (x==1){
+		e1->flags[2] = 1;
 		printf("valor da aceleração:\n");
 		scanf("%f",&(*e1).a);
 	}
 	printf("deslocamento\n");
 	scanf("%d", &x);
 	if (x==1){
+		e1->flags[3] = 1;
+		printf("Possui referencia de ponto inicial?(caso seja diferente de zero):\n");
+		scanf("%d", &x);
+		if (x==1){
+			printf("valor da posição inicial:\n");
+			scanf("%f" ,&(*d1).si);
+			printf("valor da posição final:\n");
+			scanf("%f" ,&(*d1).sf);
+			e1->s = d1->sf - d1->si;
+		}else{
 		printf("valor do deslocamento:\n");
 		scanf("%f",&(*e1).s);
+		d1->sf=e1->s;
+		}
 	}
 	printf("tempo \n");
 	scanf("%d", &x);
 	if (x==1){
+		e1->flags[4] = 1;
 		printf("valor do tempo:\n");
 		scanf("%f",&(*e1).t);
 	}
 }
 
-void gera_grafico(struct experimento *e1){	
-	int mat[L][C]={{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0}};
+void gera_grafico(struct experimento *e1, struct deslocamento *d1){	
+	int mat[L][C]={{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}};
 	int i,j;
 	int grafico;
 	printf("selecione o tipo de grafico:\n");
@@ -139,37 +183,41 @@ void gera_grafico(struct experimento *e1){
 	switch(grafico){
 		case 1:
 			if(e1->a==0){
-				if(e1->t == -1000){
+				if(e1->flags[4]  == 0){
 					for(i=0;i<L;i++){
 						//colocar possibilidade de erro do usuario caso troque v com vi
 						j=i*e1->v;
-						if(j<L){
-							mat[i][j]=1;
+						if(j<=d1->sf){
+							if((j<L)&&(j >= d1->si)){
+								mat[i][j]=1;
+							}
 						}
 					}
-					}else{
-						for(i=0;i<L;i++){
-							j=i*e1->v;
-							if(j<=e1->s){
-								if(j<L){
-									mat[i][j]=1;
-								}
+				}else{
+					for(i=0;i<L;i++){
+						j=i*e1->v;
+						if(j<=d1->sf){
+							if((j<L)&&(j >= d1->si)){
+								mat[i][j]=1;
+							}
 						}
 					}
 				}
 			}else{
-				if(e1->t == -1000){
+				if(e1->flags[4]  == 0){
 					for(i=0;i<L;i++){
 						j=(i*e1->vi)+(e1->a*pow(i,2))/2;
-						if(j<L){
-							mat[i][j]=1;
+						if(j<=d1->sf){
+							if((j<L)&&(j >= d1->si)){
+								mat[i][j]=1;
+							}
 						}
 					}
 					}else{
 						for(i=0;i<L;i++){
 							j=(i*e1->vi)+(e1->a*pow(i,2))/2;
 							if(j<=e1->s){
-								if(j<L){
+								if((j<L)&&(j >= d1->si)){
 									mat[i][j]=1;
 								}
 							}
@@ -209,12 +257,14 @@ void gera_grafico(struct experimento *e1){
 }
 
 int main(void){
+	struct deslocamento d1;
+	d1.si = 0;
 	struct experimento e1;
-	e1.v  = -1000;
-	e1.vi = -1000;
-	e1.a  = -1000;
-	e1.s  = -1000;
-	e1.t  = -1000;
+	e1.flags[0]  = 0;
+	e1.flags[1]  = 0;
+	e1.flags[2]  = 0;
+	e1.flags[3]  = 0;
+	e1.flags[4]  = 0;
 	int menu;
 	printf("selecione o tipo de exercicio\n");
 	printf("1 - Exercicios classicos\n");	
@@ -223,22 +273,29 @@ int main(void){
 	printf("\n");
 	switch(menu){
 		case 1:	
-			valoresF(&e1);
-			if( e1.v != -1000 && e1.vi != -1000 && e1.a != -1000 || e1.v != -1000 && e1.vi != -1000 && e1.t != -1000 || e1.vi != -1000 && e1.a != -1000 && e1.t != -1000 || e1.v != -1000 && e1.a != -1000 && e1.t != -1000 ){
+			valoresF(&e1,&d1);
+			if( (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
 				muv1(&e1);
 			}
-			if( e1.s != -1000 && e1.vi != -1000 && e1.a != -1000 || e1.s != -1000 && e1.vi != -1000 && e1.t != -1000 || e1.s != -1000 && e1.a != -1000 && e1.t != -1000 || e1.vi != -1000 && e1.a != -1000 && e1.t != -1000 ){
+			if( (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[3]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
 				muv2(&e1);
 			}
-			if( e1.v != -1000 && e1.vi != -1000 && e1.a != -1000 || e1.v != -1000 && e1.vi != -1000 && e1.s != -1000 || e1.vi != -1000 && e1.a != -1000 && e1.s != -1000 || e1.v != -1000 && e1.a != -1000 && e1.s != -1000 ){
+			if( (e1.flags[0]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[3]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[3]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[3]  == 1) ){
 				torriceli(&e1);
+			}
+			if( (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[3]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
+				muv2(&e1);
+			}
+			if( (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
+				muv1(&e1);
 			}
 			printf("velocidade final: %f\n", e1.v);
 			printf("velocidade inicial: %f\n", e1.vi);
 			printf("aceleração: %f\n", e1.a);
 			printf("deslocamento: %f\n", e1.s);
 			printf("tempo: %f\n", e1.t);
-			gera_grafico(&e1);
+			
+			gera_grafico(&e1,&d1);
 			break;
 		case 2:
 			tempomedio(&e1);
