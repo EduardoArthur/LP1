@@ -26,7 +26,7 @@ int media(int v[L][C]){
 int main(void){
     int v[L][C];
     preenche(v);
-    media(v);
+    printf("%d",media(v));
     	
     return 0;
 }
