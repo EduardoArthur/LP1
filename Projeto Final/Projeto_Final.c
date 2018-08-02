@@ -118,37 +118,49 @@ void tempomedio(struct experimento *e1){
 }
 
 void valoresF(struct experimento *e1 , struct deslocamento *d1){
-	int x;
+	char x;
+	char r = 'y';
 	printf("informações fornecidas\n");
-	printf("digite 1 para sim e 0 para não\n");
-	printf("velocidade final\n");
-	scanf("%d", &x);
-	if (x==1){
+	printf("digite y para sim e n para não\n");
+	printf("possui a velocidade final?\n");
+	scanf("%c", &x);
+	scanf("%c", &x);
+	x = tolower(x);
+	
+	if (x == r){
 		e1->flags[0] = 1;
 		printf("valor da velocidade final:\n");
 		scanf("%f",&(*e1).v);
 	}
-	printf("velocidade inicial\n");
-	scanf("%d", &x);
-	if (x==1){
+	printf("possui a velocidade inicial?\n");
+	scanf("%c", &x);
+	scanf("%c", &x);
+	x = tolower(x);
+	if (x == r){
 		e1->flags[1] = 1;
 		printf("valor da velocidade inicial:\n");
 		scanf("%f",&(*e1).vi);
 	}
-	printf("aceleração\n");
-	scanf("%d", &x);
-	if (x==1){
+	printf("possui a aceleração?\n");
+	scanf("%c", &x);
+	scanf("%c", &x);
+	x = tolower(x);
+	if(x == r){
 		e1->flags[2] = 1;
 		printf("valor da aceleração:\n");
 		scanf("%f",&(*e1).a);
 	}
-	printf("deslocamento\n");
-	scanf("%d", &x);
-	if (x==1){
+	printf("possui o deslocamento?\n");
+	scanf("%c", &x);
+	scanf("%c", &x);
+	x = tolower(x);
+	if (x == r){
 		e1->flags[3] = 1;
 		printf("Possui referencia de ponto inicial?(caso seja diferente de zero):\n");
-		scanf("%d", &x);
-		if (x==1){
+		scanf("%c", &x);
+		scanf("%c", &x);
+		x = tolower(x);
+		if(x == r){
 			printf("valor da posição inicial:\n");
 			scanf("%f" ,&(*d1).si);
 			printf("valor da posição final:\n");
@@ -160,14 +172,18 @@ void valoresF(struct experimento *e1 , struct deslocamento *d1){
 		d1->sf=e1->s;
 		}
 	}
-	printf("tempo \n");
-	scanf("%d", &x);
-	if (x==1){
+	printf("possui o tempo? \n");
+	scanf("%c", &x);
+	scanf("%c", &x);
+	x = tolower(x);
+	if (x == r){
 		e1->flags[4] = 1;
 		printf("valor do tempo:\n");
 		scanf("%f",&(*e1).t);
 	}
+	scanf("%c", &x);
 }
+
 
 void gera_grafico(struct experimento *e1, struct deslocamento *d1){	
 	int mat[L][C]={{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}};
@@ -183,8 +199,7 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 	switch(grafico){
 		case 1:
 			if(e1->a==0){
-				if(e1->flags[4]  == 0){
-					for(i=0;i<L;i++){
+				for(i=0;i<L;i++){
 						//colocar possibilidade de erro do usuario caso troque v com vi
 						j=i*e1->v;
 						if(j<=d1->sf){
@@ -192,40 +207,18 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 								mat[i][j]=1;
 							}
 						}
-					}
-				}else{
-					for(i=0;i<L;i++){
-						j=i*e1->v;
-						if(j<=d1->sf){
-							if((j<L)&&(j >= d1->si)){
-								mat[i][j]=1;
-							}
-						}
-					}
 				}
 			}else{
-				if(e1->flags[4]  == 0){
-					for(i=0;i<L;i++){
-						j=(i*e1->vi)+(e1->a*pow(i,2))/2;
-						if(j<=d1->sf){
-							if((j<L)&&(j >= d1->si)){
-								mat[i][j]=1;
-							}
-						}
-					}
-					}else{
-						for(i=0;i<L;i++){
-							j=(i*e1->vi)+(e1->a*pow(i,2))/2;
-							if(j<=e1->s){
-								if((j<L)&&(j >= d1->si)){
-									mat[i][j]=1;
-								}
-							}
+				for(i=0;i<L;i++){
+					j=(i*e1->vi)+(e1->a*pow(i,2))/2;
+					if(j<=d1->sf){
+						if((j<L)&&(j >= d1->si)){
+							mat[i][j]=1;
 						}
 					}
 				}
-			
-	}
+			}
+		
 
 	//imprime o grafico
 	printf("∆S");
@@ -253,7 +246,7 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 	}
 	printf("∆T");
 	printf("\n");
-	
+	}
 }
 
 int main(void){
@@ -301,7 +294,7 @@ int main(void){
 			tempomedio(&e1);
 			printf("tempo medio %f\n", e1.t);
 	}
-	
+
 
 	return 0;
 }
