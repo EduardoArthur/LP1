@@ -187,65 +187,203 @@ void valoresF(struct experimento *e1 , struct deslocamento *d1){
 
 void gera_grafico(struct experimento *e1, struct deslocamento *d1){	
 	int mat[L][C]={{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}};
+	int matN[L][C]={{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}};
 	int i,j;
+	int aux=0;
 	int grafico;
 	printf("selecione o tipo de grafico:\n");
 	printf("1 - movimento uniforme / variado ∆S X ∆T\n");	
 	printf("2 - movimento uniformemente variado ∆V X ∆T\n");
-	printf("3 - ∆V X ∆T\n");
-	//pensar em casos negativos *comum em ∆a X ∆T	
+	printf("3 - ∆A X ∆T\n");
 	scanf("%d",&grafico);
 	printf("\n");
 	switch(grafico){
 		case 1:
-			if(e1->a==0){
-				for(i=0;i<L;i++){
-						//colocar possibilidade de erro do usuario caso troque v com vi
-						j=i*e1->v;
-						if(j<=d1->sf){
-							if((j<L)&&(j >= d1->si)){
-								mat[i][j]=1;
-							}
-						}
-				}
-			}else{
-				for(i=0;i<L;i++){
-					j=(i*e1->vi)+(e1->a*pow(i,2))/2;
+			for(i=0;i<L;i++){
+				j=(d1->si)+(i*e1->vi)+(e1->a*pow(i,2))/2;
+				if(j>=0){
 					if(j<=d1->sf){
 						if((j<L)&&(j >= d1->si)){
 							mat[i][j]=1;
 						}
 					}
+				}else{
+					j=j*(-1);
+					if(j<=d1->sf){
+						if((j<L)&&(j >= (d1->si))){
+							matN[i][j]=1;
+							aux=1;
+						}
+					}
 				}
 			}
-		
-
-	//imprime o grafico
-	printf("∆S");
-	printf("\n");
-	for (i=L-1; i>0; i--){
-		if(i>9){
-			printf("%d ",i);
-		}else{
-			printf(" %d ",i);
-		}
-		for (j=1;j<C;j++){
-			int v=mat[j][i];
-			if (v==0){
-				printf(". ");
-			}else{
-				printf("● ");
+			
+			//imprime o grafico
+			printf("∆S");
+			printf("\n");
+			for (i=L-1; i>0; i--){
+				if(i>9){
+					printf("%d ",i);
+				}else{
+					printf(" %d ",i);
+				}
+				for (j=1;j<C;j++){
+					int v=mat[j][i];
+					if (v==0){
+						printf(". ");
+					}else{
+						printf("● ");
+					}
+				}
+				printf("\n");
 			}
-		}
-		printf("\n");
-	}
-	printf("   ");
+			printf(" 0 ");
 	
-	for (j=1; j<C; j++){
-		printf("%d ",j);
-	}
-	printf("∆T");
-	printf("\n");
+			for (j=1; j<C; j++){
+				printf("%d ",j);
+			}
+			printf("∆T");
+			printf("\n");
+			if(aux==1){
+				for (i=1; i<L; i++){
+					if(i>9){
+						printf("%d ",i);
+					}else{
+						printf("-%d ",i);
+					}
+					for (j=1;j<C;j++){
+						int v=matN[j][i];
+						if (v==0){
+							printf(". ");
+						}else{
+							printf("● ");
+						}
+					}
+					printf("\n");
+				
+				}
+			}
+			
+			break;
+		case 2:
+			for(i=0;i<L;i++){
+				j=(e1->vi)+(e1->a)*i;
+				if(j>=0){
+					if((j<L)&&(i<=e1->t)){
+						mat[i][j]=1;
+					}
+				}else{
+					j=j*(-1);
+					if((j<L)&&(i<=e1->t)){
+						matN[i][j]=1;
+						aux=1;
+					}
+				}
+			}
+	
+			//imprime o grafico
+			printf("∆V");
+			printf("\n");
+			for (i=L-1; i>0; i--){
+				if(i>9){
+					printf("%d ",i);
+				}else{
+					printf(" %d ",i);
+				}
+				for (j=1;j<C;j++){
+					int v=mat[j][i];
+					if (v==0){
+						printf(". ");
+					}else{
+						printf("● ");
+					}
+				}
+				printf("\n");
+			}
+			printf(" 0 ");
+			for (j=1; j<C; j++){
+				printf("%d ",j);
+			}
+			printf("∆T");
+			printf("\n");
+			if(aux == 1){
+				for (i=1; i<L; i++){
+					if(i>9){
+						printf("%d ",i);
+					}else{
+						printf("-%d ",i);
+					}
+					for (j=1;j<C;j++){
+						int v=matN[j][i];
+						if (v==0){
+							printf(". ");
+						}else{
+							printf("● ");
+						}
+					}
+					printf("\n");
+				
+				}
+			}
+			break;
+		case 3:
+			if( (e1->a) > 0){
+				for(i=0;i<L;i++){
+					j=e1->a;
+					if((j<L)&&(i<=e1->t)){
+						mat[i][j]=1;
+					}
+				}
+			}else{
+				for(i=0;i<L;i++){
+					j=(e1->a)*(-1);
+					if((j<L)&&(i<=e1->t)){
+						matN[i][j]=1;
+					}
+				}
+			}
+			//imprime o grafico
+			printf("∆A");
+			printf("\n");
+			for (i=L-1; i>0; i--){
+				if(i>9){
+					printf("%d ",i);
+				}else{
+					printf(" %d ",i);
+				}
+				for (j=1;j<C;j++){
+					int v=mat[j][i];
+					if (v==0){
+						printf(". ");
+					}else{
+						printf("● ");
+					}
+				}
+				printf("\n");
+			}
+			printf(" 0 ");
+			for (j=1; j<C; j++){
+				printf("%d ",j);
+			}
+			printf("∆T");
+			printf("\n");
+			for (i=1; i<L; i++){
+				if(i>9){
+					printf("%d ",i);
+				}else{
+					printf("-%d ",i);
+				}
+				for (j=1;j<C;j++){
+					int v=matN[j][i];
+					if (v==0){
+						printf(". ");
+					}else{
+						printf("● ");
+					}
+				}
+				printf("\n");
+			}
+
 	}
 }
 
@@ -259,29 +397,48 @@ int main(void){
 	e1.flags[3]  = 0;
 	e1.flags[4]  = 0;
 	int menu;
+	int novo;
 	printf("selecione o tipo de exercicio\n");
 	printf("1 - Exercicios classicos\n");	
 	printf("2 - Laboratorio\n");	
 	scanf("%d",&menu);
 	printf("\n");
 	switch(menu){
-		case 1:	
-			valoresF(&e1,&d1);
-			if( (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
-				muv1(&e1);
-			}
-			if( (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[3]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
-				muv2(&e1);
-			}
-			if( (e1.flags[0]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[3]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[3]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[3]  == 1) ){
-				torriceli(&e1);
-			}
-			if( (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[3]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
-				muv2(&e1);
-			}
-			if( (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
-				muv1(&e1);
-			}
+		case 1:
+			printf("1 - Novo experimento\n");
+			printf("2 - Carregar experimento\n");	
+			scanf("%d",&novo);
+			switch(novo){
+				case 1:
+					valoresF(&e1,&d1);
+					if( (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
+						muv1(&e1);
+					}
+					if( (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[3]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
+						muv2(&e1);
+					}
+					if( (e1.flags[0]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[3]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[3]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[3]  == 1) ){
+						torriceli(&e1);
+					}
+					if( (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[3]  == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[3]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
+						muv2(&e1);
+					}
+					if( (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
+						muv1(&e1);
+					}
+					FILE* f = fopen ("salva_info.bin" , "wb");
+					fwrite(&e1, sizeof(struct experimento), 1, f);
+					fwrite(&d1, sizeof(struct deslocamento), 1, f);
+					fclose(f);
+					break;
+				case 2:
+					FILE* f = fopen("salva_info.bin", "rb");
+					fread(&e1, sizeof(struct experimento), 1, f);
+					fread(&d1, sizeof(struct deslocamento), 1, f);
+					fclose(f);
+					break;
+				}
+						
 			printf("velocidade final: %f\n", e1.v);
 			printf("velocidade inicial: %f\n", e1.vi);
 			printf("aceleração: %f\n", e1.a);
