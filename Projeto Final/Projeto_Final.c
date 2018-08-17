@@ -202,19 +202,17 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 			for(i=0;i<L;i++){
 				j=(d1->si)+(i*e1->vi)+(e1->a*pow(i,2))/2;
 				if(j>=0){
-					if(j<=d1->sf){
-						if((j<L)&&(j >= d1->si)){
-							mat[i][j]=1;
-						}
+					if((j<L)&&(i<=e1->t)){
+						mat[i][j]=1;
 					}
+					
 				}else{
 					j=j*(-1);
-					if(j<=d1->sf){
-						if((j<L)&&(j >= (d1->si))){
-							matN[i][j]=1;
-							aux=1;
-						}
+					if((j<L)&&(i<=e1->t)){
+						matN[i][j]=1;
+						aux=1;
 					}
+					
 				}
 			}
 			
@@ -398,6 +396,7 @@ int main(void){
 	e1.flags[4]  = 0;
 	int menu;
 	int novo;
+	int salvar;
 	printf("selecione o tipo de exercicio\n");
 	printf("1 - Exercicios classicos\n");	
 	printf("2 - Laboratorio\n");	
@@ -426,16 +425,29 @@ int main(void){
 					if( (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[2]  == 1) || (e1.flags[0] == 1 && e1.flags[1]  == 1 && e1.flags[4]  == 1) || (e1.flags[1]  == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) || (e1.flags[0] == 1 && e1.flags[2]  == 1 && e1.flags[4]  == 1) ){
 						muv1(&e1);
 					}
-					FILE* f = fopen ("salva_info.bin" , "wb");
-					fwrite(&e1, sizeof(struct experimento), 1, f);
-					fwrite(&d1, sizeof(struct deslocamento), 1, f);
-					fclose(f);
+					printf("1 - Salvar experimento\n");
+					printf("2 - Não salvar\n");	
+					scanf("%d",&salvar);
+					switch(salvar){
+						case 1:
+							{
+							FILE* f = fopen ("salva_info.bin" , "wb");
+							fwrite(&e1, sizeof(struct experimento), 1, f);
+							fwrite(&d1, sizeof(struct deslocamento), 1, f);
+							fclose(f);
+							}
+							break;
+						case 2:
+							break;
+					}
 					break;
 				case 2:
+					{
 					FILE* f = fopen("salva_info.bin", "rb");
 					fread(&e1, sizeof(struct experimento), 1, f);
 					fread(&d1, sizeof(struct deslocamento), 1, f);
 					fclose(f);
+					}
 					break;
 				}
 						
