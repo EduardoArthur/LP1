@@ -17,6 +17,8 @@ struct experimento{
 	float s;
 	float t;
 	struct deslocamento d1;
+  float desviop;
+  float incerteza;
 };
 
 
@@ -90,31 +92,38 @@ void muv2(struct experimento *e1){
 
 }
 
-/*
-float desviopadrão(int x[],int n,float m ){ /*vetor com todas as medidas, tamanho do vetor e media dos valores * /
+
+float desviopadrão(float x[],int n,float m ){
 int i;
 float s=0;
-for(i=0;i<=n;i++){
+float dp;
+for(i=0;i<n;i++){
 	s=pow((x[i]-m),2)+s;
 }
-dp=sqrt(s/n)
+dp=sqrt(s/(n-1));
 return dp;
 }
-*/
+
 void tempomedio(struct experimento *e1){
 	int n;
 	int i;
 	float t;
 	float somatemp=0;
+  float desvio;
 	printf("Calculo do tempo medio\n");
 	printf("quantidade de medidas recolhidas\n");
 	scanf("%d", &n);
+  float medidas[n];
 	for (i=1; i<=n; i++){
 		printf("tempo: %d \n", i);
 		scanf("%f", &t);
+    medidas[i-1] = t;
 		somatemp=somatemp+t;
 	}
-	(*e1).t=somatemp/n;	
+	(*e1).t=somatemp/n;
+  (*e1).desviop = desviopadrão(medidas,n,e1->t);
+  (*e1).incerteza = (e1->desviop / sqrt(n));
+  	
 }
 
 void valoresF(struct experimento *e1 , struct deslocamento *d1){
@@ -462,6 +471,9 @@ int main(void){
 		case 2:
 			tempomedio(&e1);
 			printf("tempo medio %f\n", e1.t);
+      printf("desvio padrão %f\n", e1.desviop);
+      printf("incerteza %f\n", e1.incerteza);
+      // verificar essa incerteza (formula utilizada desvio padrão / raiz do n de medidas)
 	}
 
 
