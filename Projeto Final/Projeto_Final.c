@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#define L 11
-#define C 11
+#define L 21
+#define C 21
 
 struct deslocamento{
 	float si;
@@ -195,8 +195,10 @@ void valoresF(struct experimento *e1 , struct deslocamento *d1){
 
 
 void gera_grafico(struct experimento *e1, struct deslocamento *d1){	
-	int mat[L][C]={{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}};
-	int matN[L][C]={{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0}};
+	int mat[L][C];
+  memset(mat,0,sizeof(mat));
+	int matN[L][C];
+  memset(matN,0,sizeof(matN));
 	int i,j;
 	int aux=0;
 	int grafico;
@@ -236,11 +238,19 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 				}
 				for (j=1;j<C;j++){
 					int v=mat[j][i];
-					if (v==0){
-						printf(". ");
-					}else{
-						printf("● ");
-					}
+          if(j<10){
+            if (v==0){
+              printf(". ");
+            }else{
+              printf("● ");
+            }
+          }else{
+            if (v==0){
+              printf(" . ");
+            }else{
+              printf(" ● ");
+            }
+          }
 				}
 				printf("\n");
 			}
@@ -260,11 +270,19 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 					}
 					for (j=1;j<C;j++){
 						int v=matN[j][i];
-						if (v==0){
-							printf(". ");
-						}else{
-							printf("● ");
-						}
+            if(j < 10){
+              if (v==0){
+                printf(". ");
+              }else{
+                printf("● ");
+              }
+            }else{
+              if (v==0){
+                printf(" . ");
+              }else{
+                printf(" ● ");
+              }
+            }
 					}
 					printf("\n");
 				
@@ -299,11 +317,19 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 				}
 				for (j=1;j<C;j++){
 					int v=mat[j][i];
-					if (v==0){
-						printf(". ");
-					}else{
-						printf("● ");
-					}
+          if(j < 10){
+            if (v==0){
+              printf(". ");
+            }else{
+              printf("● ");
+            }
+          }else{
+            if (v==0){
+              printf(" . ");
+            }else{
+              printf(" ● ");
+            }
+          }
 				}
 				printf("\n");
 			}
@@ -322,16 +348,24 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 					}
 					for (j=1;j<C;j++){
 						int v=matN[j][i];
-						if (v==0){
-							printf(". ");
-						}else{
-							printf("● ");
-						}
-					}
-					printf("\n");
-				
+            if(j < 10){
+              if (v==0){
+                printf(". ");
+              }else{
+                printf("● ");
+              }
+            }else{
+              if (v==0){
+                printf(" . ");
+              }else{
+                printf(" ● ");
+            }
+          }
 				}
+				printf("\n");
+				
 			}
+		}
 			break;
 		case 3:
 			if( (e1->a) > 0){
@@ -360,11 +394,19 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 				}
 				for (j=1;j<C;j++){
 					int v=mat[j][i];
-					if (v==0){
-						printf(". ");
-					}else{
-						printf("● ");
-					}
+          if(j < 10){
+            if (v==0){
+              printf(". ");
+            }else{
+              printf("● ");
+            }
+          }else{
+            if (v==0){
+              printf(" . ");
+            }else{
+              printf(" ● ");
+            }
+          }
 				}
 				printf("\n");
 			}
@@ -382,11 +424,19 @@ void gera_grafico(struct experimento *e1, struct deslocamento *d1){
 				}
 				for (j=1;j<C;j++){
 					int v=matN[j][i];
+          if(j < 10){
 					if (v==0){
 						printf(". ");
 					}else{
 						printf("● ");
 					}
+          }else{
+            if (v==0){
+              printf(" . ");
+            }else{
+              printf(" ● ");
+            }
+          }
 				}
 				printf("\n");
 			}
